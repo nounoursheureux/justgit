@@ -21,18 +21,18 @@ app.get('/:repo',function(req,res){
     });
 });
 app.get('/:repo/branches',function(req,res){
-    Git.Repository.open("repos/" + req.params.repo).then(function(repo){
-        repo.getReferenceNames(Git.Reference.TYPE.OID).then(function(branches){
-            branches.forEach(function(branch){
-                branch.replace(/^refs\/heads\//,'');
-            });
-            res.render('branches',{branches:branches});
-        });
-    }); 
+    getBranches(req.params.repo,function(branches){
+        res.render('branches',{branches:branches});
+    });
 });
 app.get('/:repo/tree/:branch/*',function(req,res){
     Git.Repository.open("repos/" + req.params.repo).then(function(repo){
         var filepath = req.path.replace(/^.+\/tree\/master\//,'');
+        if(filepath === '')
+        {
+            res.redirect('/' + req.params.repo);
+            return;
+        }
         repo.getBranchCommit(req.params.branch).then(function(commit){
             commit.getTree().then(function(tree){
                 tree.getEntry(filepath).then(function(entry){
@@ -57,3 +57,20 @@ app.get('/:repo/tree/:branch',function(req,res){
     res.redirect('/' + req.params.repo);
 });
 app.listen(3000);
+
+function getBranches(reponame,callback)
+{
+    Git.Repository.open("repos/" + reponame).then(function(repo){
+        repo.getReferenceNames(Git.Reference.TYPE.OID).then(function(branches){
+            var array = [];
+            branches.forEach(function(branch){
+                if(branch.match(/^refs\/heads\//))
+                {
+                    array.push(branch.replace(/^refs\/heads\//,''));
+                }
+            });
+            callback(array);
+        });
+    }); 
+
+}
