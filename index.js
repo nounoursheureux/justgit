@@ -53,13 +53,7 @@ app.get('/:repo/tree/:branch/*',function(req,res){
         });
     });
 });
-/*app.get('/:repo/tree/:branch',function(req,res){
-    Git.Repository.open("repos/" + req.params.repo).then(function(repo){
-        repo.getBranchCommit(req.params.branch).then(function(commit){
-            commit.getTree().then(function(tree){
-                res.render('tree',{dir:'',files:tree.entries(),branch:req.params.branch,repo:req.params.repo});
-            });
-        }); 
-    });
-});*/
+app.get('/:repo/tree/:branch',function(req,res){
+    res.redirect('/' + req.params.repo);
+});
 app.listen(3000);
