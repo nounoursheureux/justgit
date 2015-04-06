@@ -15,7 +15,6 @@ app.get('/',function(req,res){
     Git.Repository.open("repos").then(function(repo){
         repo.getBranchCommit(branch).then(function(commit){
             commit.getTree().then(function(tree){
-                console.log(branch);
                 res.render('index',{root:'',files:tree.entries(),branch:branch});
             });
         });
@@ -33,21 +32,23 @@ app.get('/branches',function(req,res){
 });
 app.get('/tree/:branch/*',function(req,res){
     Git.Repository.open("repos").then(function(repo){
-        var path = req.path.replace(/^\/tree\/master\//,'');
+        var filepath = req.path.replace(/^\/tree\/master\//,'');
         repo.getBranchCommit(req.params.branch).then(function(commit){
-            commit.getEntry(path).then(function(entry){
-                if(entry.isTree())
-                {
-                    entry.getTree().then(function(tree){
-                        res.render('tree',{root:tree.path(),files:tree.entries(),branch:req.params.branch});
-                    });
-                }
-                else if(entry.isFile())
-                {
-                    entry.getBlob().then(function(blob){
-                        res.render('file',{file:blob});
-                    });
-                }
+            commit.getTree().then(function(tree){
+                tree.getEntry(filepath).then(function(entry){
+                    if(entry.isTree())
+                    {
+                        entry.getTree().then(function(dir){
+                            res.render('tree',{dir:filepath,files:dir.entries(),branch:req.params.branch});
+                        });
+                    }
+                    else if(entry.isFile())
+                    {
+                        entry.getBlob().then(function(blob){
+                            res.render('file',{file:blob});
+                        });
+                    }
+                });
             });
         });
     });

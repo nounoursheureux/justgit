@@ -1,10 +1,12 @@
 html
   body
     h1 Yolo
-    h2 /#{root}
+    h2 /#{dir}
     ul
       each item in files
         if item.isTree()
-          li: em: a(href='/tree/'+branch+'/'+item.toString()) #{item.filename()}
+          li 
+            em: a(href='/tree/'+branch+'/'+dir+'/'+item.filename()) #{item.filename()}
         else if item.isBlob()
-          li: a(href='/tree/'+branch+'/'+item.toString()) #{item.filename()}
+          li
+            a(href='/tree/'+branch+'/'+dir+'/'+item.filename()) #{item.filename()}
