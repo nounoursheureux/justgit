@@ -5,6 +5,6 @@ html
     ul
       each item in files
         if item.isTree()
-          li: em: a(href='/tree/'+branch+'/'+item.toString()) #{item.filename()}
+          li: em: a(href='/'+ repo +'/tree/'+branch+'/'+item.toString()) #{item.filename()}
         else if item.isBlob()
-          li: a(href='/tree/'+branch+'/'+item.toString()) #{item.filename()}
+          li: a(href='/'+ repo +'/tree/'+branch+'/'+item.toString()) #{item.filename()}
