@@ -9,22 +9,37 @@ app.set('view engine','jade');
 app.set('views',path.join(__dirname,'templates'));
 
 app.get('/',function(req,res){
+    var branch;
+    if(req.query.branch !== undefined) branch = req.query.branch;
+    else branch = "master";
     Git.Repository.open("repos").then(function(repo){
-        repo.getBranchCommit('master').then(function(commit){
+        repo.getBranchCommit(branch).then(function(commit){
             commit.getTree().then(function(tree){
-                res.render('index',{root:'',files:tree.entries()});
+                console.log(branch);
+                res.render('index',{root:'',files:tree.entries(),branch:branch});
             });
         });
     });
 });
-app.get('/*',function(req,res){
+app.get('/branches',function(req,res){
     Git.Repository.open("repos").then(function(repo){
-        repo.getBranchCommit('master').then(function(commit){
-            commit.getEntry(req.path.substr(1)).then(function(entry){
+        repo.getReferenceNames(Git.Reference.TYPE.OID).then(function(branches){
+            branches.forEach(function(branch){
+                branch.replace(/^refs\/heads\//,'');
+            });
+            res.render('branches',{branches:branches});
+        });
+    }); 
+});
+app.get('/tree/:branch/*',function(req,res){
+    Git.Repository.open("repos").then(function(repo){
+        var path = req.path.replace(/^\/tree\/master\//,'');
+        repo.getBranchCommit(req.params.branch).then(function(commit){
+            commit.getEntry(path).then(function(entry){
                 if(entry.isTree())
                 {
                     entry.getTree().then(function(tree){
-                        res.render('index',{root:tree.path(),files:tree.entries()});
+                        res.render('tree',{root:tree.path(),files:tree.entries(),branch:req.params.branch});
                     });
                 }
                 else if(entry.isFile())
@@ -35,6 +50,15 @@ app.get('/*',function(req,res){
                 }
             });
         });
+    });
+});
+app.get('/tree/:branch',function(req,res){
+    Git.Repository.open("repos").then(function(repo){
+        repo.getBranchCommit(req.params.branch).then(function(commit){
+            commit.getTree().then(function(tree){
+                res.render('tree',{root:'',files:tree.entries(),branch:req.params.branch});
+            });
+        }); 
     });
 });
 app.listen(3000);
