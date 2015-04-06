@@ -1,0 +1,10 @@
+html
+  body
+    h1 Yolo
+    h2 /#{root}
+    ul
+      each item in files
+        if item.isTree()
+          li: em: a(href=item.toString()) #{item.filename()}
+        else if item.isBlob()
+          li: a(href=item.toString()) #{item.filename()}
