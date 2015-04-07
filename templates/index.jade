@@ -8,3 +8,12 @@ html
           li: em: a(href='/'+ repo +'/tree/'+branch+'/'+item.toString()) #{item.filename()}
         else if item.isBlob()
           li: a(href='/'+ repo +'/tree/'+branch+'/'+item.toString()) #{item.filename()}
+    br
+    select(id='branch')
+      each item in branchList
+        if item == branch
+          option(selected): a(href='/' + repo + '?branch=' + item) #{item}
+        else
+          option: a(href='/' + repo + '?branch=' + item) #{item}
+
+    script(src='/js/index.js')

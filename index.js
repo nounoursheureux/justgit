@@ -6,6 +6,7 @@ var express = require('express'),
     routes = require('./routes')(app);
 
 app.use(bodyparser.urlencoded({extended:false}));
+app.use(express.static('public'));
 app.set('view engine','jade');
 app.set('views',path.join(__dirname,'templates'));
 app.listen(3000);

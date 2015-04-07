@@ -9,8 +9,23 @@ exports.indexRepo = function(req,res)
     var branch;
     if(req.query.branch !== undefined) branch = req.query.branch;
     else branch = "master";
-    engine.getIndex(req.params.repo,branch).then(function(tree) {
-        res.render('index',{root:'',files:tree.entries(),branch:branch,repo:req.params.repo});
+    var entries;
+    var branchList;
+    var promise1 = new Promise(function(resolve,reject) {
+        engine.getIndex(req.params.repo,branch).then(function(tree) {
+            entries = tree.entries();
+            resolve(tree.entries());
+        });
+    });
+    var promise2 = new Promise(function(resolve,reject) {
+        engine.getBranches(req.params.repo).then(function(branches) {
+            branchList = branches;
+            resolve(branches);
+        });
+    });
+    Promise.all([promise1,promise2]).then(function()
+    {
+        res.render('index',{root:'',files:entries,branch:branch,repo:req.params.repo,branchList:branchList});
     });
 };
 
@@ -23,7 +38,8 @@ exports.branchesList = function(req,res)
 
 exports.repoTree = function(req,res)
 {
-    var filepath = req.path.replace(/^.+\/tree\/master\//,'');
+    var re = new RegExp('^.+\/tree\/' + req.params.branch + '\/');
+    var filepath = req.path.replace(re,'');
     if(filepath === '')
     {
         res.redirect('/' + req.params.repo);
