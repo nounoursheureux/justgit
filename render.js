@@ -1,6 +1,8 @@
 var express = require('express'),
     app = express(),
-    Git = require('nodegit');
+    Git = require('nodegit'),
+    request = require('request'),
+    engine = require('./engine');
 
 exports.indexRepo = function(req,res)
 {
@@ -18,7 +20,7 @@ exports.indexRepo = function(req,res)
 
 exports.branchesList = function(req,res)
 {
-    getBranches(req.params.repo,function(branches){
+    engine.getBranches(req.params.repo).then(function(branches) {
         res.render('branches',{branches:branches});
     });
 };
@@ -53,19 +55,3 @@ exports.repoTree = function(req,res)
     });
 };
 
-function getBranches(reponame,callback)
-{
-    Git.Repository.open("repos/" + reponame).then(function(repo){
-        repo.getReferenceNames(Git.Reference.TYPE.OID).then(function(branches){
-            var array = [];
-            branches.forEach(function(branch){
-                if(branch.match(/^refs\/heads\//))
-                {
-                    array.push(branch.replace(/^refs\/heads\//,''));
-                }
-            });
-            callback(array);
-        });
-    }); 
-
-}

@@ -1,9 +1,13 @@
 var express = require('express'),
     app = express(),
-    render = require('./render');
+    render = require('./render'),
+    api = require('./api');
 
 module.exports = function(app)
 {
+    app.get('/api/:repo',api.indexRepo);
+    app.get('/api/:repo/:branches',api.branchesList);
+
     app.get('/:repo',render.indexRepo);
     app.get('/:repo/:branches',render.branchesList);
     app.get('/:repo/tree/:branch/*',render.repoTree);
