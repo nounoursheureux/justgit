@@ -1,6 +1,4 @@
-var express = require('express'),
-    app = express(),
-    Git = require('nodegit'),
+var Git = require('nodegit'),
     engine = require('./engine');
 
 var api = {};

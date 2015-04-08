@@ -1,6 +1,4 @@
-var express = require('express'),
-    app = express(),
-    sqlite3 = require('sqlite3').verbose(),
+var sqlite3 = require('sqlite3').verbose(),
     db = new sqlite3.Database('data/db.sql'),
     crypto = require('crypto'),
     Git = require('nodegit');
@@ -64,6 +62,23 @@ engine.getFileOrTree = function(reponame,branch,filepath)
 
 engine.login = function(username,password)
 {
+    return new Promise(function(resolve,reject) {
+        var mix = username + ':' + password + ':h4cK3rW4r';
+        var hash = crypto.createHash('sha512');
+        hash.update(mix);
+        var hashedPass = hash.digest('hex');
+        db.serialize(function() {
+            db.get("SELECT username FROM users WHERE username='" + username +"';",function(err,data) {
+                if(err) throw err;
+                if(data === undefined) reject('This user doesn\'t exist');
+                else db.get("SELECT username FROM users WHERE username='" + username + "' AND password='" + hashedPass + "';",function(err,data) {
+                    if(err) throw err;
+                    if(data === undefined) reject('Bad password');
+                    else resolve(username);
+                });
+            });
+        });
+    });
 };
 
 engine.register = function(username,password)

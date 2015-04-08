@@ -1,14 +1,10 @@
-var express = require('express'),
-    app = express(),
-    render = require('./render'),
+var render = require('./render'),
     path = require('path'),
     backend = require('git-http-backend'),
     spawn = require('child_process').spawn,
-    bodyparser = require('body-parser'),
-    auth = require('basic-auth');
+    auth = require('basic-auth'),
     api = require('./api');
 
-app.use(bodyparser.urlencoded({extended:true}));
 module.exports = function(app)
 {
     app.get('/',render.index);

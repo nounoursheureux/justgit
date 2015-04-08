@@ -1,16 +1,11 @@
-var express = require('express'),
-    app = express(),
-    Git = require('nodegit'),
-    bodyparser = require('body-parser'),
+var Git = require('nodegit'),
     engine = require('./engine');
-
-app.use(bodyparser.urlencoded({extended:true}));
 
 var render = {};
 
 render.index = function(req,res)
 {
-    res.end('SWAG');
+    res.end(req.session.username);
 };
 
 render.login = function(req,res)
@@ -18,6 +13,12 @@ render.login = function(req,res)
     var username = req.body.username,
         password = req.body.password;
     if(username === '' || password === '') res.render('login',{error:'No empty fields'});
+    engine.login(username,password).then(function(username) {
+        req.session.username = username;
+        res.redirect('/');
+    },function(error) {
+        res.render('login',{error:error});
+    });
 };
 
 render.register = function(req,res)
