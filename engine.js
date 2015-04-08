@@ -51,4 +51,9 @@ engine.getFileOrTree = function(reponame,branch,filepath)
     });
 };
 
+engine.handleGitRequest = function(req,res)
+{
+
+}
+
 module.exports = engine;

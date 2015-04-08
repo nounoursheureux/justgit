@@ -7,6 +7,7 @@ var express = require('express'),
 
 app.use(bodyparser.urlencoded({extended:false}));
 app.use(express.static('public'));
+app.use(express.static('repos'));
 app.set('view engine','jade');
 app.set('views',path.join(__dirname,'templates'));
 app.listen(3000);

@@ -1,7 +1,6 @@
 var express = require('express'),
     app = express(),
     Git = require('nodegit'),
-    request = require('request'),
     engine = require('./engine');
 
 exports.indexRepo = function(req,res)
