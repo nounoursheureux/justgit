@@ -1,8 +1,19 @@
 var express = require('express'),
     app = express(),
+    sqlite3 = require('sqlite3').verbose(),
+    db = new sqlite3.Database('data/db.sql'),
+    crypto = require('crypto'),
     Git = require('nodegit');
 
 var engine = {};
+
+engine.initDatabase = function()
+{
+    db.serialize(function() {
+        db.run("CREATE TABLE IF NOT EXISTS users(username VARCHAR(20) UNIQUE,password CHAR(128))");
+        db.run("CREATE TABLE IF NOT EXISTS repos(name VARCHAR(40),owner VARCHAR(20))");
+    });
+};
 
 engine.getBranches = function(reponame)
 {
@@ -51,9 +62,32 @@ engine.getFileOrTree = function(reponame,branch,filepath)
     });
 };
 
-engine.handleGitRequest = function(req,res)
+engine.login = function(username,password)
 {
+};
 
-}
+engine.register = function(username,password)
+{
+    return new Promise(function(resolve,reject) {
+        var mix = username + ':' + password + ':h4cK3rW4r';
+        var hash = crypto.createHash('sha512');
+        hash.update(mix);
+        var hashedPass = hash.digest('hex');
+        db.serialize(function() {
+            db.get("SELECT username FROM users WHERE username='" + username + "';",function(err,data){
+                if(err) throw err;
+                if(data === undefined)
+                {
+                    db.run("INSERT INTO users VALUES ('" + username + "','" + hashedPass + "');");
+                    resolve(username);
+                }
+                else
+                {
+                    reject('The user already exists');
+                }
+            });
+        });
+    });
+};
 
 module.exports = engine;

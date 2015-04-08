@@ -8,9 +8,10 @@
   "author": "Nounours Heureux",
   "license": "WTFPL",
   "dependencies": {
+    "body-parser": "latest",
     "express": "^4.12.3",
+    "express-session": "^1.11.1",
     "jade": "^1.9.2",
-    "nodegit":"latest",
-    "body-parser":"latest"
+    "nodegit": "latest"
   }
 }

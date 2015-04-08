@@ -1,0 +1,11 @@
+html
+  head
+    meta(charset='utf8')
+  body
+    if error
+      p #{error}
+    form(action='',method='post')
+      input(name='username')
+      input(name='password' type='password')
+      input(name='password2' type='password')
+      input(type='submit' value='Register')

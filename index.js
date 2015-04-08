@@ -3,11 +3,13 @@ var express = require('express'),
     path = require('path'),
     bodyparser = require('body-parser'),
     render = require('./render'),
-    routes = require('./routes')(app);
+    engine = require('./engine');
 
-app.use(bodyparser.urlencoded({extended:false}));
+app.use(bodyparser.urlencoded({extended:true}));
+var routes = require('./routes')(app);
 app.use(express.static('public'));
 app.use(express.static('repos'));
 app.set('view engine','jade');
 app.set('views',path.join(__dirname,'templates'));
+engine.initDatabase();
 app.listen(3000);

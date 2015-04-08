@@ -4,15 +4,24 @@ var express = require('express'),
     path = require('path'),
     backend = require('git-http-backend'),
     spawn = require('child_process').spawn,
+    bodyparser = require('body-parser'),
     auth = require('basic-auth');
     api = require('./api');
 
+app.use(bodyparser.urlencoded({extended:true}));
 module.exports = function(app)
 {
-    app.get('/api/:repo',api.indexRepo);
-    app.get('/api/:repo/branches',api.branchesList);
-    app.get('/api/:repo/tree/:branch/*',api.getFileOrTree);
-
+    app.get('/',render.index);
+    app.route('/login')
+        .get(function(req,res,next) {
+            res.render('login');
+        })
+        .post(render.login);
+    app.route('/register')
+        .get(function(req,res,next) {
+            res.render('register');
+        })
+        .post(render.register);
     app.get('/:repo',render.indexRepo);
     app.get('/:repo/branches',render.branchesList);
     app.get('/:repo/tree/:branch/*',render.repoTree);
@@ -41,6 +50,9 @@ module.exports = function(app)
         }
         else handleGitRequest(req,res);
     });
+    app.get('/api/:repo',api.indexRepo);
+    app.get('/api/:repo/branches',api.branchesList);
+    app.get('/api/:repo/tree/:branch/*',api.getFileOrTree);
 };
 
 function handleGitRequest(req,res)
