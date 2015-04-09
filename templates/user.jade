@@ -5,4 +5,4 @@ html
     h1 #{user}
     ul
       each dir in repos
-        li: a(href=dir) #{dir}
+        li: a(href='/' + user + '/' + dir) #{dir}

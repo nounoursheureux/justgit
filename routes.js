@@ -1,9 +1,5 @@
 var render = require('./render'),
-    path = require('path'),
-    spawn = require('child_process').spawn,
-    auth = require('basic-auth'),
-    pushover = require('pushover'),
-    repos = pushover('repos'),
+    git = require('./git'),
     api = require('./api');
 
 module.exports = function(app)
@@ -39,21 +35,11 @@ module.exports = function(app)
     app.get('/:user/:repo/tree/:branch',function(req,res){
         res.redirect('/' + req.params.repo);
     });
-    app.get('/:user/:repo/info/refs*',function(req,res){
-        console.log('git info req');
-        repos.handle(req,res);
-    });
-    app.post('/:user/:repo/git-receive-pack',function(req,res) {
-        repos.handle(req,res);
-    });
-    app.post('/:user/:repo/git-upload-pack',function(req,res) {
-        repos.handle(req,res);
-    });
+    app.get('/:user/:repo/info/refs*',git.handleRequest);
+    app.post('/:user/:repo/git-receive-pack',git.handleRequest);
+    app.post('/:user/:repo/git-upload-pack',git.handleRequest);
     app.get('/api/:repo',api.indexRepo);
     app.get('/api/:repo/branches',api.branchesList);
     app.get('/api/:repo/tree/:branch/*',api.getFileOrTree);
 };
 
-repos.on('push',function(push) {
-    push.accept();
-});
