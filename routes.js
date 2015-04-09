@@ -18,24 +18,38 @@ module.exports = function(app)
             res.render('register');
         })
         .post(render.register);
-    app.get('/:repo',render.indexRepo);
-    app.get('/:repo/branches',render.branchesList);
-    app.get('/:repo/tree/:branch/*',render.repoTree);
-    app.get('/:repo/tree/:branch',function(req,res){
+    app.get('/404',function(req,res) {
+        res.render('404');
+    });
+    app.route('/new')
+        .get(function(req,res,next){
+            res.render('new');
+        })
+        .post(render.newRepo);
+    app.route('/clone')
+        .get(function(req,res,next) {
+            res.render('clone');
+        })
+        .post(render.cloneRepo);
+    app.get('/:user',render.userHome);
+    app.get('/:user/:repo',render.indexRepo);
+    app.get('/:user/:repo/branches',render.branchesList);
+    app.get('/:user/:repo/tree/:branch/*',render.repoTree);
+    app.get('/:user/:repo/tree/:branch',function(req,res){
         res.redirect('/' + req.params.repo);
     });
-    app.get('/:repo/info/refs*',function(req,res) {
+    app.get('/:user/:repo/info/refs*',function(req,res) {
         handleGitRequest(req,res);
     });
-    app.post('/:repo/git-upload-pack',function(req,res){
+    app.post('/:user/:repo/git-upload-pack',function(req,res){
         handleGitRequest(req,res);
     });
-    app.post('/:repo/git-receive-pack',function(req,res){
+    app.post('/:user/:repo/git-receive-pack',function(req,res){
         var credentials = auth(req);
         if(!credentials) 
         {
             res.writeHead(401, {
-                'WWW-Authenticate': 'Basic realm="yolo"'
+                'WWW-Authenticate': 'Basic realm="just-git"'
             });
             res.end();
         }
@@ -53,8 +67,7 @@ module.exports = function(app)
 
 function handleGitRequest(req,res)
 {
-    var repo = req.params.repo;
-    var dir = path.join(__dirname, 'repos', repo);
+    var dir = 'repos/' + req.params.user + '/' + req.params.repo;
 
     req.pipe(backend(req.url, function (err, service) {
         if (err) return res.end(err + '\n');

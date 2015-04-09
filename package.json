@@ -9,9 +9,12 @@
   "license": "WTFPL",
   "dependencies": {
     "body-parser": "latest",
-    "express": "^4.12.3",
-    "express-session": "^1.11.1",
-    "jade": "^1.9.2",
+    "express": "latest",
+    "express-session": "latest",
+    "jade": "latest",
     "nodegit": "latest"
+  },
+  "scripts": {
+      "clear": "rm -rf data/* repos/*"
   }
 }

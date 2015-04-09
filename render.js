@@ -5,7 +5,7 @@ var render = {};
 
 render.index = function(req,res)
 {
-    res.end(req.session.username);
+    res.render('index',{user:req.session.username});
 };
 
 render.login = function(req,res)
@@ -35,6 +35,15 @@ render.register = function(req,res)
     });
 };
 
+render.userHome = function(req,res)
+{
+    engine.listReposForUser(req.params.user).then(function(files){
+        res.render('user',{repos:files,user:req.params.user});
+    },function(error) {
+        res.status(404).render('404');
+    });
+};
+
 render.indexRepo = function(req,res)
 {
     var branch;
@@ -43,20 +52,24 @@ render.indexRepo = function(req,res)
     var entries;
     var branchList;
     var promise1 = new Promise(function(resolve,reject) {
-        engine.getIndex(req.params.repo,branch).then(function(tree) {
+        console.log('swag');
+        engine.getIndex(req.params.user,req.params.repo,branch).then(function(tree) {
             entries = tree.entries();
+            console.log('index');
             resolve(tree.entries());
         });
     });
     var promise2 = new Promise(function(resolve,reject) {
-        engine.getBranches(req.params.repo).then(function(branches) {
+        console.log('prout');
+        engine.getBranches(req.params.user,req.params.repo).then(function(branches) {
             branchList = branches;
+            console.log("branch");
             resolve(branches);
         });
     });
     Promise.all([promise1,promise2]).then(function()
     {
-        res.render('repo',{root:'',files:entries,branch:branch,repo:req.params.repo,branchList:branchList});
+        res.render('repo',{root:'',files:entries,branch:branch,repo:req.params.repo,branchList:branchList,owner:req.params.user});
     });
 };
 
@@ -76,11 +89,11 @@ render.repoTree = function(req,res)
         res.redirect('/' + req.params.repo);
         return;
     }
-    engine.getFileOrTree(req.params.repo,req.params.branch,filepath).then(function(entry) {
+    engine.getFileOrTree(req.params.user,req.params.repo,req.params.branch,filepath).then(function(entry) {
         if(entry.isTree())
         {
             entry.getTree().then(function(dir){
-                res.render('tree',{dir:filepath,files:dir.entries(),branch:req.params.branch,repo:req.params.repo});
+                res.render('tree',{dir:filepath,files:dir.entries(),branch:req.params.branch,repo:req.params.repo,owner:req.params.user});
             });
         }
         else if(entry.isFile())
@@ -90,6 +103,30 @@ render.repoTree = function(req,res)
             });
         }
     });
+};
+
+render.newRepo = function(req,res)
+{
+    if(req.session.username)
+    {
+        engine.createEmptyRepo(req.session.username,req.body.reponame).then(function(repo){
+            res.redirect('/'); 
+        });      
+    }
+    else
+    {
+        res.redirect('/login');
+    }
+};
+
+render.cloneRepo = function(req,res)
+{
+    if(req.session.username)
+    {
+        engine.cloneRepo(req.session.username,req.body.repourl).then(function(repo) {
+            res.redirect('/');
+        });
+    }
 };
 
 module.exports = render;
