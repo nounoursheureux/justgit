@@ -18,4 +18,4 @@ app.use(express.static('repos'));
 app.set('view engine','jade');
 app.set('views',path.join(__dirname,'templates'));
 engine.initDatabase();
-app.listen(3000);
+app.listen(process.argv[2]);

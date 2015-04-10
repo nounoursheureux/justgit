@@ -12,7 +12,10 @@
     "express": "latest",
     "express-session": "latest",
     "jade": "latest",
-    "nodegit": "latest"
+    "nodegit": "latest",
+    "sqlite3": "latest",
+    "pushover": "latest",
+    "basic-auth": "latest"
   },
   "scripts": {
       "clear": "rm -rf data/* repos/*"
