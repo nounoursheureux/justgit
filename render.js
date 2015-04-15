@@ -52,18 +52,20 @@ render.indexRepo = function(req,res)
     var entries;
     var branchList;
     var promise1 = new Promise(function(resolve,reject) {
-        console.log('swag');
         engine.getIndex(req.params.user,req.params.repo,branch).then(function(tree) {
             entries = tree.entries();
-            console.log('index');
             resolve(tree.entries());
+        },function(error){
+            if(error.name == 'EmptyRepositoryError') 
+            {
+                res.render('empty');
+                return;
+            }
         });
     });
     var promise2 = new Promise(function(resolve,reject) {
-        console.log('prout');
         engine.getBranches(req.params.user,req.params.repo).then(function(branches) {
             branchList = branches;
-            console.log("branch");
             resolve(branches);
         });
     });

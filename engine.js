@@ -38,11 +38,18 @@ engine.getIndex = function(user,reponame,branch)
 {
     return new Promise(function(resolve,reject) {
         Git.Repository.open("repos/" + user + '/' + reponame + '.git').then(function(repo){
-            repo.getBranchCommit(branch).then(function(commit){
-                commit.getTree().then(function(tree){
-                    resolve(tree);
+            if(repo.isEmpty())
+            {
+                reject({name:'EmptyRepositoryError',message:'This repository is empty'});
+            }
+            else
+            {
+                repo.getBranchCommit(branch).then(function(commit){
+                    commit.getTree().then(function(tree){
+                        resolve(tree);
+                    });
                 });
-            });
+            }
         });
     });
 };
