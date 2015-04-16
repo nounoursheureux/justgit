@@ -136,21 +136,15 @@ render.cloneRepo = function(req,res)
 
 render.makeRequest = function(req,res,view,obj)
 {
-    console.log("prout");
-    console.log(req.session.username);
-    console.log('lol');
     if(req.session.username !== undefined)
     {
-        console.log('yes');
         engine.makeUser(req.session.username).then(function(user){
-            console.log('bouya');
             obj.user = user;
             res.render(view,obj);
         });
     }
     else 
     {
-        console.log('no');
         res.render(view,obj);
     }
 };
