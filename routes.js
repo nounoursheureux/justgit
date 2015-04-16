@@ -25,12 +25,6 @@ module.exports = function(app)
             else res.redirect('/login');
         })
         .post(render.newRepo);
-    app.route('/clone')
-        .get(function(req,res,next) {
-            if(req.session.username !== undefined) res.render('clone');
-            else res.redirect('/login');
-        })
-        .post(render.cloneRepo);
     app.get('/:user',render.userHome);
     app.get('/:user/:repo',render.indexRepo);
     app.get('/:user/:repo/branches',render.branchesList);

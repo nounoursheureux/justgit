@@ -134,22 +134,6 @@ engine.createEmptyRepo = function(username,reponame)
     });
 };
 
-engine.cloneRepo = function(username,repourl)
-{
-    return new Promise(function(resolve,reject) {
-        var slicedPath = url.parse(repourl).pathname.split('/');
-        var reponame = slicedPath[slicedPath.length-1];
-        var localPath = 'repos/' + username + '/' + reponame;
-        if(path.extname(localPath) != '.git') localPath += '.git';
-        Git.Clone(repourl,localPath,{bare:1}).then(function(repo) {
-            db.run("INSERT INTO repos VALUES('" + reponame + "','" + username + "');"); 
-            resolve(reponame);
-        },function(error) {
-            throw error;
-        });
-    });
-};
-
 engine.listReposForUser = function(username)
 {
     return new Promise(function(resolve,reject) {

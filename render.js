@@ -104,7 +104,7 @@ render.repoTree = function(req,res)
         else if(entry.isFile())
         {
             entry.getBlob().then(function(blob){
-                res.render('file',{file:blob});
+                render.makeRequest(req,res,'file',{file:blob});
             });
         }
     });
@@ -121,16 +121,6 @@ render.newRepo = function(req,res)
     else
     {
         res.redirect('/login');
-    }
-};
-
-render.cloneRepo = function(req,res)
-{
-    if(req.session.username)
-    {
-        engine.cloneRepo(req.session.username,req.body.repourl).then(function(repo) {
-            res.redirect('/');
-        });
     }
 };
 

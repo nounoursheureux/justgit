@@ -1,7 +1,6 @@
-html
-  include ./head.jade
-  body
-    if user
-      p: a(href='/new') Create new repo
-      p: a(href='/clone') Clone a repo
-  include ./scripts.jade
+extends layout.jade
+
+block body
+  if user
+    p: a(href='/new') Create new repo
+    p: a(href='/clone') Clone a repo
