@@ -1,8 +1,9 @@
-html
-  head
-    meta(charset='utf8')
-  body
-    h1 New
-    form(action='',method='post')
-      input(name='reponame')
-      input(type='submit' value='Create')
+extends layout.jade
+
+block body
+  h1 New
+  form(action='',method='post')
+      .input-field
+        input(name='reponame',id='reponame',type='text')
+        label(for='reponame') Repository name
+        button(class='btn waves-effect waves-light',type='submit',name='action') Create

@@ -8,20 +8,20 @@ module.exports = function(app)
     app.get('/',render.index);
     app.route('/login')
         .get(function(req,res,next) {
-            res.render('login');
+            render.makeRequest(req,res,'login');
         })
         .post(render.login);
     app.route('/register')
         .get(function(req,res,next) {
-            res.render('register');
+            render.makeRequest(req,res,'register');
         })
         .post(render.register);
     app.get('/404',function(req,res) {
-        res.render('404');
+        render.makeRequest(req,res,'404');
     });
     app.route('/new')
         .get(function(req,res,next){
-            if(req.session.username !== undefined) res.render('new');
+            if(req.session.username !== undefined) render.makeRequest(req,res,'new');
             else res.redirect('/login');
         })
         .post(render.newRepo);

@@ -5,14 +5,14 @@ var render = {};
 
 render.index = function(req,res)
 {
-    res.render('index',{user:req.session.username});
+    render.makeRequest(req,res,'index');
 };
 
 render.login = function(req,res)
 {
     var username = req.body.username,
         password = req.body.password;
-    if(username === '' || password === '') res.render('login',{error:'No empty fields'});
+    if(username === '' || password === '') render.makeRequest(req,res,'login',{error:'No empty fields'});
     engine.login(username,password).then(function(username) {
         req.session.username = username;
         res.redirect('/');
@@ -38,7 +38,7 @@ render.register = function(req,res)
 render.userHome = function(req,res)
 {
     engine.listReposForUser(req.params.user).then(function(files){
-        res.render('user',{repos:files,user:req.params.user});
+        render.makeRequest(req,res,'user',{repos:files,owner:req.params.user});
     },function(error) {
         res.status(404).render('404');
     });
@@ -98,7 +98,7 @@ render.repoTree = function(req,res)
         if(entry.isTree())
         {
             entry.getTree().then(function(dir){
-                res.render('tree',{dir:filepath,files:dir.entries(),branch:req.params.branch,repo:req.params.repo,owner:req.params.user});
+                render.makeRequest(req,res,'tree',{dir:filepath,files:dir.entries(),branch:req.params.branch,repo:req.params.repo,owner:req.params.user});
             });
         }
         else if(entry.isFile())
@@ -126,6 +126,7 @@ render.newRepo = function(req,res)
 
 render.makeRequest = function(req,res,view,obj)
 {
+    if(!obj) obj = {};
     if(req.session.username !== undefined)
     {
         engine.makeUser(req.session.username).then(function(user){

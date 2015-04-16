@@ -1,11 +1,16 @@
-html
-  head
-    meta(charset='utf8')
-  body
-    if error
-      p #{error}
-    form(action='',method='post')
-      input(name='username')
-      input(name='password' type='password')
-      input(name='password2' type='password')
-      input(type='submit' value='Register')
+extends layout.jade
+
+block body
+  if error
+    p #{error}
+  form(action='',method='post')
+    .input-field
+      input(name='username',type='text',id='username')
+      label(for='username') Username
+    .input-field
+      input(name='password',type='password',id='password')
+      label(for='password') Password
+    .input-field
+      input(name='password2',type='password',id='password2')
+      label(for='password2') Repeat your password
+    button(class='btn waves-effect waves-light',type='submit',name='action') Register

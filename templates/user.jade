@@ -1,8 +1,7 @@
-html
-  head
-    meta(charset='utf8')
-  body
-    h1 #{user}
-    ul
-      each dir in repos
-        li: a(href='/' + user + '/' + dir) #{dir}
+extends layout.jade
+
+block body
+  h1 #{owner}
+  ul
+    each dir in repos
+      li: a(href='/' + owner + '/' + dir) #{dir}

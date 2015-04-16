@@ -3,18 +3,23 @@ html
     meta(charset='utf8')
     link(rel='stylesheet' href='/css/materialize.min.css')
     link(rel='stylesheet' href='/css/style.css')
+    link(rel='stylesheet' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css')
   body
     block nav
       if user
         nav
           div(class='nav-wrapper')
-            ul(class='right')
+            ul.right
               li: a(href='' class='dropdown-button' data-activates='repos') Repositories
         ul(id='repos' class='dropdown-content')
           for repo in user.repoList
-            li: a(href='/' + owner + '/' + repo) #{repo}
+            li: a(href='/' + user.name + '/' + repo) #{repo}
           li(class='divider')
             li: a(href='/new') New repo
+      else
+        nav
+          .nav-wrapper
+
     .container
       block body
 
