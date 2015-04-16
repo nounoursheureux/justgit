@@ -77,14 +77,6 @@ render.indexRepo = function(req,res)
     });
 };
 
-
-render.branchesList = function(req,res)
-{
-    engine.getBranches(req.params.repo).then(function(branches) {
-        res.render('branches',{branches:branches});
-    });
-};
-
 render.repoTree = function(req,res)
 {
     var re = new RegExp('^.+\/tree\/' + req.params.branch + '\/');

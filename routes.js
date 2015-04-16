@@ -27,7 +27,6 @@ module.exports = function(app)
         .post(render.newRepo);
     app.get('/:user',render.userHome);
     app.get('/:user/:repo',render.indexRepo);
-    app.get('/:user/:repo/branches',render.branchesList);
     app.get('/:user/:repo/tree/:branch/*',render.repoTree);
     app.get('/:user/:repo/tree/:branch',function(req,res){
         res.redirect('/' + req.params.repo);
