@@ -1,5 +1,6 @@
 var render = require('./render'),
     git = require('./git'),
+    express = require('express'),
     api = require('./api');
 
 module.exports = function(app)
@@ -20,12 +21,14 @@ module.exports = function(app)
     });
     app.route('/new')
         .get(function(req,res,next){
-            res.render('new');
+            if(req.session.username !== undefined) res.render('new');
+            else res.redirect('/login');
         })
         .post(render.newRepo);
     app.route('/clone')
         .get(function(req,res,next) {
-            res.render('clone');
+            if(req.session.username !== undefined) res.render('clone');
+            else res.redirect('/login');
         })
         .post(render.cloneRepo);
     app.get('/:user',render.userHome);

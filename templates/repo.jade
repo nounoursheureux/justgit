@@ -1,19 +1,22 @@
 html
+  include ./head.jade
   body
-    h1 Index
-    h2 /#{root}
-    ul
-      each item in files
-        if item.isTree()
-          li: em: a(href='/'+ owner +'/'+ repo +'/tree/'+branch+'/'+item.toString()) #{item.filename()}
-        else if item.isBlob()
-          li: a(href='/' + owner + '/' + repo +'/tree/'+branch+'/'+item.toString()) #{item.filename()}
-    br
-    select(id='branch')
-      each item in branchList
-        if item == branch
-          option(selected): a(href='/'+ owner +'/' + repo + '?branch=' + item) #{item}
-        else
-          option: a(href='/' + owner + '/' +repo + '?branch=' + item) #{item}
-
+    include ./nav.jade
+    div(class='container')
+      h1 Index
+      h2 /#{root}
+      ul
+        each item in files
+          if item.isTree()
+            li: em: a(href='/'+ owner +'/'+ repo +'/tree/'+branch+'/'+item.toString()) #{item.filename()}
+          else if item.isBlob()
+            li: a(href='/' + owner + '/' + repo +'/tree/'+branch+'/'+item.toString()) #{item.filename()}
+      br
+      select(id='branch')
+        each item in branchList
+          if item == branch
+            option(selected): a(href='/'+ owner +'/' + repo + '?branch=' + item) #{item}
+          else
+            option: a(href='/' + owner + '/' +repo + '?branch=' + item) #{item}
+    include ./scripts.jade
     script(src='/js/index.js')

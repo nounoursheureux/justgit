@@ -51,6 +51,7 @@ render.indexRepo = function(req,res)
     else branch = "master";
     var entries;
     var branchList;
+    var repoList;
     var promise1 = new Promise(function(resolve,reject) {
         engine.getIndex(req.params.user,req.params.repo,branch).then(function(tree) {
             entries = tree.entries();
@@ -69,9 +70,18 @@ render.indexRepo = function(req,res)
             resolve(branches);
         });
     });
-    Promise.all([promise1,promise2]).then(function()
+    var promise3 = new Promise(function(resolve,reject) {
+        engine.listReposForUser(req.params.user).then(function(repos) {
+            repoList = repos;
+            resolve(repos);
+        });
+    });
+    Promise.all([promise1,promise2,promise3]).then(function()
     {
-        res.render('repo',{root:'',files:entries,branch:branch,repo:req.params.repo,branchList:branchList,owner:req.params.user});
+        res.render('repo',{root:'',files:entries,branch:branch,repo:req.params.repo,branchList:branchList,owner:req.params.user,repoList:repoList},function(err,html){
+            if(err) throw err;
+            res.send(html);
+        });
     });
 };
 

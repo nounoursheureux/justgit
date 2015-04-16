@@ -12,9 +12,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
-var routes = require('./routes')(app);
 app.use(express.static('public'));
-app.use(express.static('repos'));
+var routes = require('./routes')(app);
 app.set('view engine','jade');
 app.set('views',path.join(__dirname,'templates'));
 engine.initDatabase();
