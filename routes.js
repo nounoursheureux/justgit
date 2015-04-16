@@ -38,4 +38,3 @@ module.exports = function(app)
     app.get('/api/:repo/branches',api.branchesList);
     app.get('/api/:repo/tree/:branch/*',api.getFileOrTree);
 };
-

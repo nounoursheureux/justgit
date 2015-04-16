@@ -12,13 +12,17 @@ html
             ul.right
               li: a(href='' class='dropdown-button' data-activates='repos') Repositories
         ul(id='repos' class='dropdown-content')
+          li: a(href='/new') New repo
+          li.divider
           for repo in user.repoList
             li: a(href='/' + user.name + '/' + repo) #{repo}
-          li(class='divider')
-            li: a(href='/new') New repo
       else
         nav
           .nav-wrapper
+              a.brand-logo.center(href='/') JustGit
+              ul.left
+                li: a(href='/login') Login
+                li: a(href='/register') Register
 
     .container
       block body

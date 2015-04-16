@@ -73,6 +73,7 @@ render.indexRepo = function(req,res)
     });
     Promise.all([promise1,promise2]).then(function()
     {
+        console.log(branchList);
         render.makeRequest(req,res,'repo',{root:'',files:entries,branch:branch,repo:req.params.repo,branchList:branchList,owner:req.params.user});
     });
 };
