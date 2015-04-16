@@ -1,12 +1,13 @@
-html
-  body
-    h1 Yolo
-    h2 /#{dir}
-    ul
-      each item in files
-        if item.isTree()
-          li 
-            em: a(href='/' + owner + '/'+ repo + '/tree/'+branch+'/'+dir+'/'+item.filename()) #{item.filename()}
-        else if item.isBlob()
-          li
-            a(href='/' + owner + '/' + repo + '/tree/'+branch+'/'+dir+'/'+item.filename()) #{item.filename()}
+extends layout.jade
+
+block body
+  h1 Yolo
+  h2 /#{dir}
+  ul
+    each item in files
+      if item.isTree()
+        li 
+          em: a(href='/' + owner + '/'+ repo + '/tree/'+branch+'/'+dir+'/'+item.filename()) #{item.filename()}
+      else if item.isBlob()
+        li
+          a(href='/' + owner + '/' + repo + '/tree/'+branch+'/'+dir+'/'+item.filename()) #{item.filename()}

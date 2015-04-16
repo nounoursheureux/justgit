@@ -172,4 +172,16 @@ engine.listReposForUser = function(username)
     });
 };
 
+engine.makeUser = function(username)
+{
+    var user = {};
+    user.name = username;
+    return new Promise(function(resolve,reject){
+        engine.listReposForUser(username).then(function(repos){
+            user.repoList = repos;
+            resolve(user);
+        });
+    });
+};
+
 module.exports = engine;

@@ -52,6 +52,7 @@ render.indexRepo = function(req,res)
     var entries;
     var branchList;
     var repoList;
+    var userObj;
     var promise1 = new Promise(function(resolve,reject) {
         engine.getIndex(req.params.user,req.params.repo,branch).then(function(tree) {
             entries = tree.entries();
@@ -70,20 +71,12 @@ render.indexRepo = function(req,res)
             resolve(branches);
         });
     });
-    var promise3 = new Promise(function(resolve,reject) {
-        engine.listReposForUser(req.params.user).then(function(repos) {
-            repoList = repos;
-            resolve(repos);
-        });
-    });
-    Promise.all([promise1,promise2,promise3]).then(function()
+    Promise.all([promise1,promise2]).then(function()
     {
-        res.render('repo',{root:'',files:entries,branch:branch,repo:req.params.repo,branchList:branchList,owner:req.params.user,repoList:repoList},function(err,html){
-            if(err) throw err;
-            res.send(html);
-        });
+        render.makeRequest(req,res,'repo',{root:'',files:entries,branch:branch,repo:req.params.repo,branchList:branchList,owner:req.params.user});
     });
 };
+
 
 render.branchesList = function(req,res)
 {
@@ -138,6 +131,27 @@ render.cloneRepo = function(req,res)
         engine.cloneRepo(req.session.username,req.body.repourl).then(function(repo) {
             res.redirect('/');
         });
+    }
+};
+
+render.makeRequest = function(req,res,view,obj)
+{
+    console.log("prout");
+    console.log(req.session.username);
+    console.log('lol');
+    if(req.session.username !== undefined)
+    {
+        console.log('yes');
+        engine.makeUser(req.session.username).then(function(user){
+            console.log('bouya');
+            obj.user = user;
+            res.render(view,obj);
+        });
+    }
+    else 
+    {
+        console.log('no');
+        res.render(view,obj);
     }
 };
 
