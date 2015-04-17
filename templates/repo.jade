@@ -6,9 +6,13 @@ block body
   ul
     each item in files
       if item.isTree()
-        li: em: a(href='/'+ owner +'/'+ repo +'/tree/'+branch+'/'+item.toString()) #{item.filename()}
+        li 
+          i.mdi-file-folder.red-text.text-lighten-1 
+          a(href='/'+ owner +'/'+ repo +'/tree/'+branch+'/'+item.toString()) #{item.filename()}
       else if item.isBlob()
-        li: a(href='/' + owner + '/' + repo +'/tree/'+branch+'/'+item.toString()) #{item.filename()}
+        li 
+          i.mdi-editor-insert-drive-file.green-text.text-lighten-1 
+          a(href='/' + owner + '/' + repo +'/tree/'+branch+'/'+item.toString()) #{item.filename()}
   br
   a.dropdown-button.btn#branch(data-activates='branch-dropdown') #{branch}
   ul#branch-dropdown.dropdown-content

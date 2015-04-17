@@ -1,8 +1,19 @@
-html
-  head
-    meta(charset=utf8)
-  body
-    if file.isBinary() == 0
-      pre #{file.toString()}
+extends layout.jade
+
+block append head
+  link(rel='stylesheet',href='/css/syntax.css')
+
+block body
+  if file.isBinary() == 0
+    if language
+      pre(data-language=language) #{file.toString()}
     else
-      p Binary file
+      pre #{file.toString()}
+  else
+    p Binary file
+
+block append scripts
+  script(src='/js/rainbow.min.js')
+  script(src='/js/language/generic.js')
+  if language
+    script(src='/js/language/'+language+'.js')

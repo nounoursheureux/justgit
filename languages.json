@@ -1,0 +1,20 @@
+{
+    ".*\\.js$":"javascript",
+    ".*\\.(c(pp|\\+\\+|c)?|h(pp|\\+\\+|h)?)$": "c",
+    ".*\\.css$": "css",
+    ".*\\.py$": "python",
+    ".*\\.(x)?html$": "html",
+    ".*\\.coffee$": "coffeescript",
+    ".*\\.c(sharp|#)$": "csharp",
+    ".*\\.d$": "d",
+    ".*\\.go$": "go",
+    ".*\\.hs$": "haskell",
+    ".*\\.java$": "java",
+    ".*\\.lua$": "lua",
+    ".*\\.php$": "php",
+    ".*\\.r$": "r",
+    ".*\\.rb$": "ruby",
+    ".*\\.(scm|ss)$": "scheme",
+    ".*\\.((z|ba|c|tc)?sh|bat|cmd|btm)$": "shell",
+    ".*\\.(sm|st)$": "smalltalk"
+}

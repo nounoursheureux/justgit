@@ -1,4 +1,6 @@
 var Git = require('nodegit'),
+    path = require('path'),
+    fs = require('fs'),
     engine = require('./engine');
 
 var render = {};
@@ -60,7 +62,7 @@ render.indexRepo = function(req,res)
         },function(error){
             if(error.name == 'EmptyRepositoryError') 
             {
-                res.render('empty');
+                render.makeRequest(req,res,'empty');
                 return;
             }
         });
@@ -73,7 +75,6 @@ render.indexRepo = function(req,res)
     });
     Promise.all([promise1,promise2]).then(function()
     {
-        console.log(branchList);
         render.makeRequest(req,res,'repo',{root:'',files:entries,branch:branch,repo:req.params.repo,branchList:branchList,owner:req.params.user});
     });
 };
@@ -96,8 +97,10 @@ render.repoTree = function(req,res)
         }
         else if(entry.isFile())
         {
-            entry.getBlob().then(function(blob){
-                render.makeRequest(req,res,'file',{file:blob});
+            fileToLang(path.parse(entry.path()).base).then(function(language) {
+                entry.getBlob().then(function(blob){
+                    render.makeRequest(req,res,'file',{file:blob,language:language});
+                });
             });
         }
     });
@@ -132,5 +135,21 @@ render.makeRequest = function(req,res,view,obj)
         res.render(view,obj);
     }
 };
+
+function fileToLang(file)
+{
+    return new Promise(function(resolve,reject) {
+        fs.readFile('languages.json',{encoding:'utf8'},function(err,data) {
+            if(err) throw err; 
+            var map = JSON.parse(data);
+            var lang;
+            for(var regex in map)
+            {
+                if(file.match(regex)) lang = map[regex];
+            }
+            resolve(lang);
+        });
+    });
+}
 
 module.exports = render;
