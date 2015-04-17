@@ -9,8 +9,10 @@ html
     block nav
       if user
         nav
-          div(class='nav-wrapper')
+          .nav-wrapper
+            a.brand-logo.center(href='/') JustGit
             ul.right
+              li: a: img.profile-picture(src=user.gravatar)
               li: a(href='' class='dropdown-button' data-activates='repos') Repositories
         ul(id='repos' class='dropdown-content')
           li: a(href='/new') New repo

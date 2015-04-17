@@ -25,15 +25,16 @@ render.login = function(req,res)
 
 render.register = function(req,res)
 {
-    var username = req.body.username,
+    var username = req.body.username.trim(),
         password = req.body.password,
-        passwordbis = req.body.password2;
-    if(username === '' || password === '' || passwordbis === '') res.render('register',{error:'No empty fields'});
+        passwordbis = req.body.password2,
+        email = req.body.email.trim();
+    if(username === '' || password === '' || passwordbis === '' || email === '') res.render('register',{error:'No empty fields'});
     if(password != passwordbis) res.render('register',{error:'The passwords don\'t match'});
-    else engine.register(username,password).then(function(username) {
+    else engine.register(username,password,email).then(function(username) {
         res.redirect('/');
     },function(error) {
-        res.render('register',{error:error});
+        render.makeRequest(req,res,'register',{error:error});
     });
 };
 
@@ -126,6 +127,7 @@ render.makeRequest = function(req,res,view,obj)
     if(req.session.username !== undefined)
     {
         engine.makeUser(req.session.username).then(function(user){
+            console.log('finished');
             obj.user = user;
             res.render(view,obj);
         });

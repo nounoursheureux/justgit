@@ -11,7 +11,7 @@ var engine = {};
 engine.initDatabase = function()
 {
     db.serialize(function() {
-        db.run("CREATE TABLE IF NOT EXISTS users(username VARCHAR(20) UNIQUE,password CHAR(128))");
+        db.run("CREATE TABLE IF NOT EXISTS users(username VARCHAR(20) UNIQUE,password CHAR(128),email VARCHAR(50))");
         db.run("CREATE TABLE IF NOT EXISTS repos(name VARCHAR(40),owner VARCHAR(20))");
     });
 };
@@ -91,7 +91,7 @@ engine.login = function(username,password)
     });
 };
 
-engine.register = function(username,password)
+engine.register = function(username,password,email)
 {
     return new Promise(function(resolve,reject) {
         var mix = username + ':' + password + ':h4cK3rW4r';
@@ -103,7 +103,7 @@ engine.register = function(username,password)
                 if(err) throw err;
                 if(data === undefined) // The user doesn't exists yet
                 {
-                    db.run("INSERT INTO users VALUES ('" + username + "','" + hashedPass + "');");
+                    db.run("INSERT INTO users VALUES ('" + username + "','" + hashedPass + "','" + email + "');");
                     fs.mkdir('repos/' + username,function(err) {
                         if(err) throw err;
                         resolve(username);
@@ -161,9 +161,40 @@ engine.makeUser = function(username)
     var user = {};
     user.name = username;
     return new Promise(function(resolve,reject){
-        engine.listReposForUser(username).then(function(repos){
-            user.repoList = repos;
+        Promise.all([
+            new Promise(function(resolve,reject) {
+                engine.listReposForUser(username).then(function(repos){
+                    user.repoList = repos;
+                    resolve(repos);
+                });
+            }),
+            new Promise(function(resolve,reject) {
+                engine.getGravatarImage(username).then(function(url) {
+                    console.log(url);
+                    user.gravatar = url;        
+                    resolve(url);
+                });
+            })
+        ]).then(function(values) {
+            console.log('resolved');
             resolve(user);
+        });
+    });
+};
+
+engine.getGravatarImage = function(username)
+{
+    console.log(username);
+    return new Promise(function(resolve,reject) {
+        db.serialize(function() {
+            db.get("SELECT email FROM users WHERE username='" + username + "';",function(err,data){
+                if(err) throw err;
+                var email = data.email.toLowerCase();
+                var hash = crypto.createHash('md5');
+                hash.update(email);
+                var hashedEmail = hash.digest('hex');
+                resolve("http://www.gravatar.com/avatar/" + hashedEmail + ".jpg");
+            });
         });
     });
 };
