@@ -1,9 +1,0 @@
-nav
-  div(class='nav-wrapper')
-    ul(class='right')
-      li: a(href='' class='dropdown-button' data-activates='repos') Repositories
-ul(id='repos' class='dropdown-content')
-  for repo in repoList
-    li: a(href='/' + owner + '/' + repo) #{repo}
-  li(class='divider')
-  li: a(href='/new') New repo
